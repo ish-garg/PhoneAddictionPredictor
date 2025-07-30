@@ -3,7 +3,7 @@ import pandas as pd
 import joblib
 import numpy as np
 
-# Load the trained model and feature names
+
 @st.cache_resource
 def load_model_and_features():
     try:
@@ -20,14 +20,14 @@ def main():
     st.title("📱 Teen Phone Addiction Level Predictor")
     st.write("This app predicts the addiction level of teenagers based on their phone usage patterns and personal characteristics.")
     
-    # Load model and feature names
+    # Load model
     model, feature_names = load_model_and_features()
     if model is None or feature_names is None:
         st.stop()
     
     st.sidebar.header("Input Features")
     
-    # Input fields based on your dataset
+    # Input fields
     age = st.sidebar.slider("Age", min_value=13, max_value=18, value=15)
     
     gender = st.sidebar.selectbox("Gender", ["Female", "Male"])
@@ -99,7 +99,7 @@ def main():
                                            min_value=0.0, max_value=16.0, 
                                            value=6.0, step=0.1)
     
-    # Create input dataframe
+    # Input dataframe
     input_data = pd.DataFrame({
         'Age': [age],
         'Gender': [gender],
@@ -130,18 +130,17 @@ def main():
     st.dataframe(input_data)
     
     try:
-        # Encode the input data
         input_encoded = pd.get_dummies(input_data, drop_first=True)
         
-        # Create a dataframe with exact feature names from training, initialized to 0
+        
         prediction_input = pd.DataFrame(0, index=[0], columns=feature_names)
         
-        # Fill in the values for features that exist in our input
+        
         for col in input_encoded.columns:
             if col in feature_names:
                 prediction_input[col] = input_encoded[col].iloc[0]
         
-        # Ensure all numerical columns have correct values
+        
         numerical_cols = ['Age', 'Daily_Usage_Hours', 'Sleep_Hours', 'Academic_Performance',
                          'Social_Interactions', 'Exercise_Hours', 'Anxiety_Level', 'Depression_Level',
                          'Self_Esteem', 'Parental_Control', 'Screen_Time_Before_Bed',
@@ -216,7 +215,6 @@ def main():
     The addiction level is predicted on a scale from 0-10, where higher values indicate greater risk of phone addiction.
     """)
     
-    st.write("**Note**: This is a predictive model and should not replace professional assessment or treatment.")
 
 if __name__ == "__main__":
     main()
